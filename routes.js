@@ -80,9 +80,11 @@ router.get(
   "/courses/:id",
   asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id, {
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
           model: User,
+          attributes: { exclude: ["createdAt", "updatedAt", "password"] },
         },
       ],
     });
