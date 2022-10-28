@@ -103,7 +103,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
-      res.location(`/course/${course.id}`);
+      res.location(`/courses/${course.id}`);
       res.status(201).end();
     } catch (error) {
       if (
