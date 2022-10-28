@@ -124,13 +124,17 @@ router.put(
   "/courses/:id",
   authenticateUser,
   asyncHandler(async (req, res) => {
+    let course = await Course.findByPk(req.params.id);
     try {
-      let course = await Course.findByPk(req.params.id);
-      if (course) {
+      if (course && req.currentUser.id === course.userId) {
+        course.title = req.body.title,
+        course.description = req.body.description,
+        course.estimatedTime = req.body.estimatedTime,
+        course.materialsNeeded = req.body.materialsNeeded
         await course.update(req.body);
         res.status(204).end();
       } else {
-        res.status(404).json();
+        res.status(403).end();
       }
     } catch (error) {
       if (
@@ -151,12 +155,12 @@ router.delete(
   "/courses/:id",
   authenticateUser,
   asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
-    if (course) {
+    let course = await Course.findByPk(req.params.id);
+    if (course && req.currentUser.id === course.userId) {
       await course.destroy();
       res.status(204).end();
     } else {
-      res.status(400).json();
+      res.status(403).end();
     }
   })
 );
